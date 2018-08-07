@@ -1,0 +1,133 @@
+The == operator will compare for equality after doing any necessary type conversions.
+The === operator will not do the conversion,
+so if two values are not the same type === will simply return false. Both are equally quick.
+***********************************************************************************************
+///arrays
+
+var names = ['Andrew','Mark','Tom'];
+var names =  new Array('Andrew','Mark','Tom');
+
+console.log(names); //prints the whole list
+
+//arrays can hold elements with different data types
+
+//functions
+- push(par): adds an element at the end
+- unshift(par): adds an element at the beginning
+- pop(): removes the last element of the array
+- shift(): removes the first element of the array
+- indexOf(par):  returns index of par, -1 if it doesn't exist
+- length 
+************************************************************************
+//Objects
+
+var Player = {   
+    name: 'Andrew',
+    age: 19,
+    job: 'Teacher',
+    calculateAge: function() {
+        return 2018-this.yearOfBirth;
+    }
+}
+
+var Player = new Object();
+Player.name = 'Andrew';
+Player.age = 19
+.....
+...
+
+console.log(Player); //prints the whole object
+
+console.log(Player["age"]);
+console.log(Player.age);
+
+Player.strength = 200; //creates a property 'strength' in the object and assigns 200 to it
+//you can create a property in a method inside the object using this.properyName
+
+*********************************************************************************************
+//Hoisting
+/**** functions ***/
+
+///ACCEPTABLE/// -> function declaration
+calculateAge(1866);
+
+function calculateAge (year)
+{
+    console.log(2016-year);
+}
+///////////////////////////////////
+///UNACCEPTABLE//// -> function expression
+
+Age(1866);          ->error
+var Age = function (year)
+{
+    console.log(2016-year);
+}
+
+
+/**** variables ***/
+
+console.log(age);  -> prints undefined, variable is declared
+                      but there's no values assigned to it yet
+var age = 12;
+
+//////////////////
+
+console.log(age) -> error, engine doesn't know what age is
+ 
+ /*********examples*********************/
+
+ console.log(age);     ->stored in the global execution context object
+ var age = 23;
+
+ function foo()
+ {
+     var age = 55;  ->stored in the foo's execution context object
+     console.log(age);
+ }
+ foo();
+ console.log(age);
+
+ OUTPUT:    undefined  
+            55
+            23
+**************************************************************************************
+//This keyword
+
+console.log(this);                              ->window object
+
+calculateAge(1985);
+
+function calculateAge(year) {
+    console.log(2016 - year);
+    console.log(this);                       ->also window object, it's a normal function declaration not a method
+}
+
+var john = {
+    name: 'John',
+    yearOfBirth: 1990,
+    calculateAge: function() {
+        console.log(this);                   ->john object, because it's called inside a method
+        console.log(2016 - this.yearOfBirth);
+        
+        function innerFunction() {
+            console.log(this);              ->window object! although it's written inside a method, it still is a normal function
+        }
+        innerFunction();
+    }
+}
+
+//method borrwing 
+
+john.calculateAge();                           ->john object
+
+var mike = {
+    name: 'Mike',
+    yearOfBirth: 1984
+};
+
+
+mike.calculateAge = john.calculateAge;
+mike.calculateAge();                        -> mike object, the method is translated into mike object earlier
+
+NOTE: that happens because when 'this' is only assigned a value when its object calls a method

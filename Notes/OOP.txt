@@ -1,0 +1,301 @@
+//object prototype(classes)
+IN JS:
+constructor(prototype) = class
+instance = object
+
+
+• every js object has a prototype property.
+• the prototype property of an object is where we put all
+methods and properties that we want other objects to inherit.
+• The constructor's protype property isn't the protype of the constructor itself
+but to all instances created throguh it.
+• when a method (or property) is called, the search starts in the object itself, if it can't be found it moves up to the object's prototype, this goes on until 
+the method is found.
+each object we create is an instance of the "Object" constructor.
+
+ (the prototype chain)
+ John -> Person -> Object -> null
+
+=========================================================================
+object literal:
+
+    var john = {
+        name: "John",
+        yearOfBirth: 1999,
+        job: "teacher"
+    }
+
+==============================
+
+constructors:
+
+    var Person = function (name,yearOfBirth,job) {
+        this.name = name;
+        this.yearOfBirth = yearOfBirth;
+        this.job = job;
+    }
+
+instantiation:
+    var john = new Person("john",1999,"teacher");
+
+the "new" operator creates an empty object, then it calls the constructor 
+with the "this" varaible pointing to the new object not the global object.
+*assigns "this" to john*
+
+=========================================
+inheritance:
+
+We can add methods and properties to the Prototype property of the constructor,  and even though they won't be directly in the 
+objects(instances), the objects will have access to them.
+
+    methods:
+    Person.prototype.calculateAge = function () {
+        console.log(2018-this.age);
+    };
+
+    john.calculateAge();
+    // calculateAge is a method in Person not in john, but john has access to it
+
+
+    properties:
+    Person.prototype.lastName;
+===========================================
+"Object.create" method:
+
+We first define an object that acts as a prototype, then define a new object based on that prototype
+/*  var myProto = {
+        method: ...
+        propety: ....
+    }   
+     var myObject = Object.create(myProto,{generic data});
+*/
+
+var personProto = {
+    calculateAge: function() {
+        console.log(2018-this.yearOfBirth);
+    }
+};
+
+var jane = Object.create(personProto, 
+{
+    name: {value:"Jane"},
+    yearOfBirth: {value:"1999"},
+    job: {value:"teacher"}
+});
+=============================================================
+What's the difference?:
+
+• Object.create: builds an object the inheirts directly from the prototype object we created
+ and passed to the first argument.
+• function constructor: the object inherits from the constructor's prototype property.
+============================================================
+Primitives vs objects:
+
+a variable that contains a Primitives, actually holds the data inside them.
+a variable associated with an object, holds a refrence to the object.
+
+• primitives are passed by value, objects are passed by refrence
+
+var prim = 5;
+var obj = {
+    name:"Andrew"
+};
+function change(a,b) {
+    a = 10;
+    b.name = "Zake";
+}
+
+//name is actually changed, while the number stayed the same, it replaced the argument with its 
+value only.
+
+====================================================================
+Passing function as arguments:
+
+
+function calcAge (el) {
+    return 2018-el;
+}
+
+function calcArr(arr,fn) {
+    var arrRes = [];
+    for(var i =0; i<arr.length; i++)
+    {
+        arrRes.push(fn(arr[i]));
+    }
+    return arrRes;
+}
+
+var years = [1990,1988,1999];
+var ages = calcArr(years,calcAge); //-> note that the function is passed not called
+==============================================================================
+Functions returning functions:
+
+function interviewQuestion (job) {
+    if(job == "doctor")
+    {
+        return function(name) {
+            console.log(name + ", draw a membrane" );
+        }
+    }
+    else
+    {
+        return function(name) {
+            console.log("What do you do" + name +"?");
+        }
+    }
+}
+
+var doctorQuestion = interviewQuestion("doctor"); //-> function expression
+doctorQuestion("Andrew");
+
+////
+
+interviewQuestion("doctor")("Andrew");
+
+
+================================================================================
+immediately invoked function expressions (IIFE) pattern
+• it's used when we want to obtain data privacy in a certain scope without interfering with the whole program
+
+( function(a) {
+    var score = 10 + a; 
+}) (50);
+
+//a function that adds 10 to our score, note that we can't access the score variable outside its scope
+==========================================================================================================
+Closures:
+
+an inner function has always access to the variables and parameters
+of its outer function, even after the outer function has returned
+
+ function retirment(retirmentAge)
+ {
+     var a = "years left";
+     return function(yearOfBirth)
+     {
+         var age = 2018-yearOfBirth;
+         console.log((retirementAge - age) + a);
+     }
+ }
+
+ var retirmentUS = retirment(66);
+ retirementUS(1990);
+
+ when we call the anonymous function, it has access to variables a and retirementAge
+ although it's executed after "retirement" is returned, but it still holds its place in the scope chain
+
+
+function interviewQuestion(job)
+{
+    return function (name)
+    {
+        var query;
+        switch(job)
+        {
+            case 'designer': 
+                query = 'explain ux';
+                 break;
+            case 'doctor':
+                query = 'fuck me';
+                break;
+            default: 
+                query = 'get a job loser';
+        }
+    }
+}
+
+interviewQuestion("doctor")("Andrew");
+
+
+=============================================================================================================================
+bind, call and apply methods:
+
+var john = {
+    name: 'John',
+    age: 26,
+    job: 'teacher',
+    presentation: function(style, timeOfDay) {
+        if (style === 'formal') {
+            console.log('Good ' + timeOfDay + ', Ladies and gentlemen! I\'m ' +  this.name + ', I\'m a ' + this.job + ' and I\'m ' + this.age + ' years old.');
+        } else if (style === 'friendly') {
+            console.log('Hey! What\'s up? I\'m ' +  this.name + ', I\'m a ' + this.job + ' and I\'m ' + this.age + ' years old. Have a nice ' + timeOfDay + '.');
+        }
+    }
+};
+var emily = {
+    name: 'Emily',
+    age: 35,
+    job: 'designer'
+};
+
+
+john.presentation('formal', 'morning');
+
+Method borrowing: 
+
+//method borrowing, explicitly change the "this" variable
+john.presentation.call(emily, 'friendly', 'afternoon');
+
+//same as before, except it recieves the other arguments as an array
+john.presentation.apply(emily, ['friendly', 'afternoon']);
+
+
+Carrying:
+
+//doesn't immediatly call the function, but it makes a copy with the function with preset arguments
+emilyFriendly = john.presentation.bind(emily, 'friendly');
+
+//now the function is saved with 2 preset arguments, so we can use it later
+emilyFriendly('morning');
+emilyFriendly('night');
+
+================================================================================================================
+example on carrying:
+
+
+var years = [1990,1998,2000,1987,1990];
+
+function calcArr(arr,fn)
+{
+    var res = [];
+    for(var i =0; i < arr.length; i++)
+    {
+        res.push(fn(arr[i]));
+    }
+    return res;
+}
+
+//callback functions
+function calculateAge(el)
+{
+    return 2018-el;
+}
+
+function isFullAge(limit, el)
+{
+    return el>=limit;
+}
+
+
+var ages = calcArr(years, calculateAge);
+//our generic function only takes one argument, so we sent a copy of "isFullAge" with preset arguments
+and only one left 
+var isFullJapan = calcArr(ages, isFullAge.bind(this,20));
+console.log(ages);
+console.log(isFullJapan);
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+
+
+

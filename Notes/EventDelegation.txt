@@ -1,0 +1,25 @@
+Event bubbling: 
+
+when an event is triggered on a DOM element, it's triggered on all parent elements
+one at a time.
+
+the target element is stored as property in the event object
+
+*****************************************************************
+Event delegation:
+Attach the event handler to the parent element and catch the target element when it's fired
+
+Use cases:
+1- an element whith lots of child elements that we're interested in
+2- when we want an event handler attached to an element that's not yet in the DOM
+when our page is loaded (deleting an item added by the user).
+
+4:07 85%
+4:19 74%
+4:25 67%
+4:27 65%
+4:43 55%
+4:58 47%
+5:22 34%
+5:39 26%
+5:50 19%
